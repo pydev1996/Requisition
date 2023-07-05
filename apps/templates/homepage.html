@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home Page</title>
+    <style>
+        body{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+       
+        
+        .buttons {
+            margin-top: 110px;
+        }
+        .content{
+            background-image: url('/static/images/bg.jpg');
+            background-size: cover;
+            
+            padding:200px;
+            background-position: bottom;
+            background-repeat: no-repeat;
+            text-align: center;
+        }
+        
+        .button {
+            box-shadow: 5px 5px #888888;
+            display: inline-block;
+            padding: 20px 40px;
+            background-color: #5b0583;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            margin: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .button:hover {
+            background-color: #0056b3;
+           
+        }
+        
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+        .banner {
+            background-color: white;
+            padding: 20px;
+            text-align: center;
+            }
+
+            .banner h1 {
+            color: #e04848;
+            font-size: 34px;
+            }
+
+            .banner .logo img {
+            width: 190px;
+            height: auto;
+            margin-top: 20px;
+            }
+            .logo {
+            position: absolute;
+    
+            top: 10px;
+            left: 20px;
+        }
+       
+        
+
+    </style>
+</head>
+<body>
+    <div class="banner">
+    <h1>Requisition Management System</h1>
+    <div class="logo">
+        <img src="/static/images/logo.png" alt="Logo">
+    </div>
+    </div>
+    <div class="content">
+    <div class="buttons">
+        <div class="dropdown">
+            <a href="#" class="button">Requisition</a>
+            <div class="dropdown-content">
+                <a href="requisition/create/">Create Requisition</a>
+                <a href="requisition/list/">Requisition List</a>
+                <a href="#">Work Order List</a>
+            </div>
+        </div>
+        <div class="dropdown">
+        <a href="#" class="button">Issue</a>
+        <div class="dropdown-content">
+            <a href="issue/create/">Create Issue</a>
+            <a href="issue/list/">TransactionList</a>
+           
+        </div>
+    </div>
+        <a href="#" class="button">Product</a>
+    </div>
+</div>
+</body>
+</html>

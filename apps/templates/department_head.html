@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Requisition List</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            padding: 3px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #252525;
+            color: white;
+        }
+        .empty-message {
+            font-style: italic;
+        }
+        .banner {
+            background-color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .banner h1 {
+            color: #c51b1b;
+            font-size: 34px;
+        }
+
+        .banner .logo img {
+            width: 190px;
+            height: auto;
+            margin-top: 20px;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+        }
+
+        .update-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .update-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .form-input {
+            margin-bottom: 10px;
+        }
+
+        .form-input label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-input input[type="text"],
+        .form-input select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .submit-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .submit-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <h1>Requisition Management System</h1>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Logo">
+        </div>
+    </div>
+    {% if requisitions %}
+        <table>
+            <thead>
+                <tr>
+                    <th>User Name</th>
+                    <th>Department Name</th>
+                    <th>Requisition Date</th>
+                    <th>Requisition No.</th>
+                    <th>Product Name</th>
+                    <th>Remark</th>
+                    <th>Approval Role</th>
+                    <th>Approval Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for requisition in requisitions %}
+                    <tr>
+                        <td>{{ requisition.user_name }}</td>
+                        <td>{{ requisition.department_name }}</td>
+                        <td>{{ requisition.requisition_date }}</td>
+                        <td>{{ requisition.requisition_no }}</td>
+                        <td>{{ requisition.products }}</td>
+                        <td>{{ requisition.remark }}</td>
+                        <td>{{ requisition.approval_role }}</td>
+                        <td>{{ requisition.get_approval_status_display }}</td>
+                        <td>
+                            <button class="update-button" data-requisition-id="{{ requisition.requisition_no }}">Update</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="empty-message">No requisitions found.</p>
+    {% endif %}
+
+    <!-- Popup HTML -->
+    <div id="update-popup" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Update Approval Status</h2>
+            <form id="update-form" method="post">
+                {% csrf_token %}
+                <input type="hidden" id="requisition-id-input" name="requisition_no" value="">
+                <div class="form-input">
+                    <label for="approval-status-select">Approval Role:</label>
+                    <select id="approval-status-select" name="approval_role">
+                        <option value="Department head">Department head</option>
+                        <option value="Store Executive">Store Executive</option>
+                        <option value="Administration">Administration</option>
+                    </select>
+                    <label for="approval-status-select">Approval Status:</label>
+                    <select id="approval-status-select" name="approval_status">
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                    <label for="approval-status-select">Remarks:</label>
+                    <input type="text" id="requisition-id-input" name="remarks" value="">
+                </div>
+                <button type="submit" class="submit-button">Update</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript code -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // When the update button is clicked
+            $('.update-button').click(function() {
+                // Get the requisition ID from the data attribute
+                var requisitionId = $(this).data('requisition-id');
+
+                // Set the requisition ID in the hidden input field
+                $('#requisition-id-input').val(requisitionId);
+
+                // Display the popup
+                $('#update-popup').show();
+            });
+
+            // When the close button is clicked
+            $('.close-button').click(function() {
+                // Hide the popup
+                $('#update-popup').hide();
+            });
+
+            // When the update form is submitted
+            $('#update-form').submit(function(e) {
+                e.preventDefault();
+
+                // Get the form data
+                var formData = $(this).serialize();
+
+                // Send an AJAX request to update the approval status
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "update_approval_status" %}',
+                    data: formData,
+                    success: function(response) {
+                        // Close the popup
+                        $('#update-popup').hide();
+
+                        // Handle the response as needed (e.g., show a success message, refresh the page)
+                        console.log(response);
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle the error response as needed
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

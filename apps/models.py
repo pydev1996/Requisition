@@ -1,0 +1,90 @@
+from django.db import models
+from datetime import datetime
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+
+class CustomUser(AbstractUser):
+    USER_TYPE_CHOICES = (
+        ('ADMINISTRATION', 'Administration'),
+        ('DEPARTMENT_HEAD', 'Department Head'),
+        ('STORE_EXECUTIVE', 'Store Executive'),
+        ('NORMAL_USER', 'Normal User'),
+    )
+
+    user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES)
+
+    def __str__(self):
+        return self.user_type
+
+class Requisition(models.Model):
+    user_name = models.CharField(max_length=100)
+    department_name = models.CharField(max_length=100)
+    requisition_date = models.DateField(default=datetime.today())
+    requisition_no = models.AutoField(primary_key=True)
+    products = models.CharField(max_length=100,default="")
+    remark = models.TextField(blank=True)
+    role_choices=(
+        ('Department Head','Department Head'),
+        ('Store Executive','Store Executive'),
+         ('Administration','Administration'),
+    )
+    approval_role = models.CharField(max_length=100, choices=role_choices, default='Department Head')
+
+
+    APPROVAL_CHOICES = (
+        ('PENDING', 'Pending'),
+        ('APPROVED', 'Approved'),
+        ('REJECTED', 'Rejected'),
+    )
+    approval_status = models.CharField(max_length=10, choices=APPROVAL_CHOICES, default='PENDING')
+
+
+
+    def __str__(self):
+        return self.user_name
+
+
+
+class Workorder(models.Model):
+    workorder_no = models.AutoField(primary_key=True)
+    requisition = models.ForeignKey(Requisition, on_delete=models.CASCADE)
+    approval_status = models.CharField(max_length=100)
+    date = models.DateField()
+    report = models.TextField()
+
+class Issue(models.Model):
+    user_name = models.CharField(max_length=100)
+    department_name = models.CharField(max_length=100)
+    issue_no = models.AutoField(primary_key=True)
+    product_name = models.CharField(max_length=100)
+    trans_date=models.DateField(default=datetime.today())
+    quantity = models.IntegerField()
+    remark = models.TextField()
+    def __str__(self):
+        return self.user_name
+
+
+class StoreBalance(models.Model):
+    product_name = models.CharField(max_length=100)
+    brand = models.CharField(max_length=100)
+    quantity = models.IntegerField()
+    remark = models.TextField()
+
+class Purchase(models.Model):
+    purchase_no = models.AutoField(primary_key=True)
+    requisition = models.ForeignKey(Requisition, on_delete=models.CASCADE)
+    workorder = models.ForeignKey(Workorder, on_delete=models.CASCADE)
+    attach_file = models.FileField(upload_to='purchases/')
+
+class Transaction(models.Model):
+    name = models.CharField(max_length=100)
+    user_id = models.IntegerField()
+    department = models.CharField(max_length=100)
+    material_name = models.CharField(max_length=100)
+    transaction_date = models.DateField()
+    quantity = models.IntegerField()
+
+class ProductList(models.Model):
+    material_name = models.CharField(max_length=100)
+    brand = models.CharField(max_length=100)

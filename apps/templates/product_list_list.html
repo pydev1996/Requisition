@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product List List</title>
+</head>
+<body>
+    <h1>Product List List</h1>
+    <ul>
+        {% for product_list in product_lists %}
+            <li>{{ product_list }}</li>
+        {% empty %}
+            <li>No product lists found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

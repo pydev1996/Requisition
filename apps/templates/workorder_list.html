@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Work Order List</title>
+</head>
+<body>
+    <h1>Work Order List</h1>
+    <ul>
+        {% for workorder in workorders %}
+            <li>{{ workorder }}</li>
+        {% empty %}
+            <li>No work orders found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

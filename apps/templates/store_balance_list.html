@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Store Balance List</title>
+</head>
+<body>
+    <h1>Store Balance List</h1>
+    <ul>
+        {% for store_balance in store_balances %}
+            <li>{{ store_balance }}</li>
+        {% empty %}
+            <li>No store balances found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
