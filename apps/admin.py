@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
 from .forms import CustomUserCreationForm
-from .models import Approval
+from .models import Approval,Requisition,Report,Workorder
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
@@ -23,3 +23,6 @@ class CustomUserAdmin(UserAdmin):
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Approval)
+admin.site.register(Requisition)
+admin.site.register(Report)
+admin.site.register(Workorder)

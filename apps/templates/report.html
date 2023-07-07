@@ -16,17 +16,21 @@
             border-bottom: 1px solid #ddd;
         }
         th {
-            background-color: #252525;
+            background-color: #5247e6;
             color: white;
         }
         .header {
             margin-bottom: 20px;
+            text-align: center;
         }
         .header h1 {
             margin: 0;
+            font-size: 40px;
+            color:brown;
         }
         .header p {
             margin: 4px 0;
+            font-size: 20px;
         }
         .button-container {
             text-align: right;
@@ -78,23 +82,116 @@
             text-decoration: none;
             cursor: pointer;
         }
+        .Heading h1{
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 20px;
+        }
+
+        .section {
+            flex-basis: calc(33.33% - 20px);
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .section h2 {
+            margin-top: 0;
+        }
+        .button-container {
+        text-align: right;
+        margin-bottom: 20px;
+    }
+
+    .add-report-button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .add-report-button:hover {
+        background-color: #45a049;
+    }
+    .dt{
+        text-align: right;
+        font-size: 18px;
+    }
+    .dep{
+        text-align: left;
+        font-size: 18px;
+    }
+    .name{
+        text-align: left;
+        font-size: 18px;
+    }
+    .req{
+        text-align: right;
+        font-size: 18px;
+    }
+    .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .name,
+    .req,
+    .dep,
+    .dt {
+        flex-basis: 25%;
+        text-align: center;
+    }
+
+    .name {
+        text-align: left;
+    }
+
+    .req {
+        text-align: right;
+    }
+
+    .name span,
+    .req span,
+    .dep span,
+    .dt span {
+        font-weight: bold;
+    }
+        
     </style>
 </head>
 <body>
     <div class="header">
+        <div class="Heading"></div>
         <h1>UITS</h1>
         <p>Holding 190, Road 5, Block J, Baridhara, Maddha, Naya Nagar Rd, Dhaka 1212</p>
-        <h2>Requisition Form</h2>
-        <p>
-            Name: <span>{{ user_name }}</span>
-            Requisition No: <span>{{ requisition_no }}</span>
-        </p>
-        <p>
-            Department: <span>{{ department_name }}</span>
-            Date: <span>{{ requisition_date }}</span>
-        </p>
+        </div>
+        
     </div>
-
+    <div class="container">
+        <div class="name">
+            <p>
+                Name: <span>{{ req.user_name }}</span>
+            </p>
+        </div>
+        <div class="req">
+            <p>
+                Requisition No.: <span>{{ req.requisition_no }}</span>
+            </p>
+        </div>
+        <div class="dep">
+            <p>Department: <span>{{ req.department_name }}</span></p>
+        </div>
+        <div class="dt">
+           <p>Date: <span>{{ req.requisition_date }}</span></p> 
+        </div>
+    </div>
     <table>
         <thead>
             <tr>
@@ -145,26 +242,49 @@
                 <label for="requisition-qty">Requisition Qty:</label>
                 <input type="number" name="requisition_qty" id="requisition-qty" required>
                 <br>
-                <label for="requisition-date">Requisition Date:</label>
-                <input type="date" name="requisition_date" id="requisition-date" required>
-                <br>
                 <br>
                 <button type="submit">Submit</button>
             </form>
         </div>
     </div>
-     <!-- Department Head -->
-     {% for item in approval %}
-     
-     <label for="department-head">Department Head:</label>
-     <br>
-     <!-- Name -->
-     <label for="username">Username: {{item.username}}</label>
-     <br>
-     <!-- Status -->
-     <label for="status">Status: {{item.get_status_display}}</label>
-     <br>
-     {% endfor %}
+    <div class="container">
+        <div class="section">
+            <h2>Created By</h2>
+            <label for="username">Name: {{ req.user_name }}</label>
+            <br>
+            <label for="status">Status: Initial</label>
+        </div>
+
+        <div class="section">
+            <h2>Department Head</h2>
+            {% for item in dh %}
+            <label for="username">Name: {{ item.username }}</label>
+            <br>
+            <label for="status">Status: {{ item.get_status_display }}</label>
+            <br>
+            {% endfor %}
+        </div>
+
+        <div class="section">
+            <h2>Store Executive</h2>
+            {% for s in se %}
+            <label for="username">Name: {{ s.username }}</label>
+            <br>
+            <label for="status">Status: {{ s.get_status_display }}</label>
+            <br>
+            {% endfor %}
+        </div>
+
+        <div class="section">
+            <h2>Administration</h2>
+            {% for s in adm %}
+            <label for="username">Name: {{ s.username }}</label>
+            <br>
+            <label for="status">Status: {{ s.get_status_display }}</label>
+            <br>
+            {% endfor %}
+        </div>
+    </div>
     <script>
         // Get the elements
         const addReportButton = document.querySelector(".add-report-button");

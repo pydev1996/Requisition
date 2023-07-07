@@ -27,11 +27,11 @@ def report_view(request, requisition_no):
     # Add your logic to retrieve the report details based on the requisition_no
     # You can pass the report details to the template or render the report page here
     report = Report.objects.filter(requisition_no=requisition_no)
-    approval = Approval.objects.filter(requisition_no=requisition_no)
-    for i in approval:
-        print(i.approval_role)
-        
-    return render(request, 'report.html', {'requisition_no': requisition_no,'report':report,'approval':approval})
+    dh = Approval.objects.filter(requisition_no=requisition_no ,approval_role='Department Head')
+    se = Approval.objects.filter(requisition_no=requisition_no ,approval_role='Store Executive')
+    adm = Approval.objects.filter(requisition_no=requisition_no ,approval_role='Administration')
+    req=Requisition.objects.get(requisition_no=requisition_no)
+    return render(request, 'report.html', {'requisition_no': requisition_no,'adm':adm,"req":req,'report':report,'dh':dh,'se':se})
 
 
 def add_report(request, requisition_no):
@@ -42,6 +42,7 @@ def add_report(request, requisition_no):
         if form.is_valid():
             report = form.save(commit=False)
             report.requisition_no = requisition
+            report.requistion_date=requisition.requisition_date
             report.save()
             return redirect('report', requisition_no=requisition_no)
     else:
@@ -56,22 +57,43 @@ def add_report(request, requisition_no):
 from django.shortcuts import render, redirect
 from .models import Approval
 from .forms import ApprovalForm
+def update_status(requisition_id):
+    approvals = Approval.objects.filter(requisition_no=requisition_id)
+    requisition = Requisition.objects.get(requisition_no=requisition_id)
+
+    if approvals.count() == 1:
+        approval = approvals.first()
+        requisition.approval_status = approval.status
+        requisition.remark = approval.remark
+    elif approvals.count() > 1:
+        # Sort approvals by id (primary key) in descending order to get the latest approval
+        latest_approval = approvals.order_by('-id').first()
+        requisition.approval_status = latest_approval.status
+        requisition.remark = latest_approval.remark
+    else:
+        # Handle the case where no approval is found for the requisition
+        # You can display an error message or set default values for the fields
+        requisition.approval_status = 'N/A'
+        requisition.remark = 'N/A'
+
+    requisition.save()
+
 
 def department_head(request):
     requisitions = Requisition.objects.all()
     form = ApprovalForm()
     return render(request, 'department_head.html', {'requisitions': requisitions, 'form': form})
 
+
 def update_approval_status(request):
     if request.method == 'POST':
         form = ApprovalForm(request.POST)
-        requisition_no = request.POST.get('requisition_no')
         if form.is_valid():
             requisition_id = request.POST.get('requisition_no')
-            print(requisition_id)
             approval = form.save(commit=False)
             approval.requisition_no= requisition_id
             approval.save()
+            update_status(requisition_id)
             return redirect('department_head')
         else:
             print(form.errors)
@@ -79,7 +101,75 @@ def update_approval_status(request):
         form = ApprovalForm()
 
     requisitions = Requisition.objects.all()
+    
     return render(request, 'department_head.html', {'requisitions': requisitions, 'form': form})
+def store_executive(request):
+    requisitions = Requisition.objects.all()
+    form = ApprovalForm()
+    return render(request, 'store_executive.html', {'requisitions': requisitions, 'form': form})
+
+
+def update_approval_status2(request):
+    if request.method == 'POST':
+        form = ApprovalForm(request.POST)
+        if form.is_valid():
+            requisition_id = request.POST.get('requisition_no')
+            approval = form.save(commit=False)
+            approval.requisition_no= requisition_id
+            approval.save()
+            update_status(requisition_id)
+            return redirect('store_executive')
+        else:
+            print(form.errors)
+    else:
+        form = ApprovalForm()
+
+    requisitions = Requisition.objects.all()
+    
+    return render(request, 'store_executive.html', {'requisitions': requisitions, 'form': form})
+
+def administrations(request):
+    requisitions = Requisition.objects.all()
+    form = ApprovalForm()
+    return render(request, 'administrations.html', {'requisitions': requisitions, 'form': form})
+def workorder(requisition_id):
+    approvals = Approval.objects.filter(requisition_no=requisition_id,approval_role='Administration')
+    requisition = Requisition.objects.get(requisition_no=requisition_id)
+    
+    for approval in approvals:
+        if approval.status == 'Approved':
+            workorder = Workorder.objects.create(
+                requisition=requisition.requisition_no,
+                approval_status=requisition.approval_status,
+                date=requisition.requisition_date
+            )
+            workorder.save()
+
+
+
+
+
+def update_approval_status3(request):
+    if request.method == 'POST':
+        form = ApprovalForm(request.POST)
+        if form.is_valid():
+            requisition_id = request.POST.get('requisition_no')
+            approval = form.save(commit=False)
+            approval.requisition_no= requisition_id
+            approval.save()
+            update_status(requisition_id)
+            workorder(requisition_id)
+            return redirect('administrations')
+        else:
+            print(form.errors)
+    else:
+        form = ApprovalForm()
+
+    requisitions = Requisition.objects.all()
+    
+    return render(request, 'administrations.html', {'requisitions': requisitions, 'form': form})
+
+
 
 
 

@@ -133,7 +133,7 @@
             <img src="/static/images/logo.png" alt="Logo">
         </div>
     </div>
-    <h1>Department Head</h1>
+    <h1>Administrations</h1>
     {% if requisitions %}
         <table>
             <thead>
@@ -237,7 +237,7 @@
                 // Send an AJAX request to update the approval status
                 $.ajax({
                     type: 'POST',
-                    url: '{% url "update_approval_status" %}',
+                    url: '{% url "update_approval_status3" %}',
                     data: formData,
                     success: function(response) {
                         // Close the popup

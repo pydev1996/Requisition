@@ -57,10 +57,10 @@ class Report(models.Model):
 
 class Workorder(models.Model):
     workorder_no = models.AutoField(primary_key=True)
-    requisition = models.ForeignKey(Requisition, on_delete=models.CASCADE)
+    requisition = models.CharField(max_length=100)
     approval_status = models.CharField(max_length=100)
     date = models.DateField()
-    report = models.TextField()
+    
 
 class Issue(models.Model):
     user_name = models.CharField(max_length=100)

@@ -1,16 +1,88 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Work Order List</title>
+    <title>Requisition List</title>
+    <style>
+        body{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            padding: 3px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #252525;
+            color: white;
+        }
+        .empty-message {
+            font-style: italic;
+        }
+        .banner {
+            background-color: white;
+            padding: 20px;
+            text-align: center;
+            }
+
+            .banner h1 {
+            color: #c51b1b;
+            font-size: 34px;
+            }
+
+            .banner .logo img {
+            width: 190px;
+            height: auto;
+            margin-top: 20px;
+            }
+            .logo {
+            position: absolute;
+    
+            top: 10px;
+            left: 20px;
+        }
+       
+        
+
+    </style>
 </head>
 <body>
+    <div class="banner">
+        <h1>Requisition Management System</h1>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Logo">
+        </div>
+        </div>
     <h1>Work Order List</h1>
-    <ul>
-        {% for workorder in workorders %}
-            <li>{{ workorder }}</li>
-        {% empty %}
-            <li>No work orders found.</li>
-        {% endfor %}
-    </ul>
+    {% if workorders %}
+    <table>
+        <thead>
+            <tr>
+                <th>Work Order No.</th>
+                <th>Requisition No.</th>
+                <th>Approval Status</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for requisition in workorders %}
+                <tr>
+                    <td>{{ requisition.workorder_no }}</td>
+                    <td>{{ requisition.requisition }}</td>
+                    <td>{{ requisition.approval_status }}</td>
+                    <td>{{ requisition.date }}</td>
+                    <td><a href="{% url 'report' requisition.requisition %}" target="_blank">View Report</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    {% else %}
+        <p class="empty-message">No requisitions found.</p>
+    {% endif %}
 </body>
 </html>
