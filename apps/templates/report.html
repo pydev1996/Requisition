@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #252525;
+            color: white;
+        }
+        .header {
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .header p {
+            margin: 4px 0;
+        }
+        .button-container {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .button-container button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .button-container button:hover {
+            background-color: #45a049;
+        }
+        
+        /* Popup styles */
+        .popup {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .popup-content {
+            background-color: white;
+            margin: 20px auto;
+            padding: 20px;
+            width: 60%;
+            max-width: 600px;
+        }
+
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>UITS</h1>
+        <p>Holding 190, Road 5, Block J, Baridhara, Maddha, Naya Nagar Rd, Dhaka 1212</p>
+        <h2>Requisition Form</h2>
+        <p>
+            Name: <span>{{ user_name }}</span>
+            Requisition No: <span>{{ requisition_no }}</span>
+        </p>
+        <p>
+            Department: <span>{{ department_name }}</span>
+            Date: <span>{{ requisition_date }}</span>
+        </p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>SL</th>
+                <th>Item Details</th>
+                <th>Brand Name</th>
+                <th>Unit</th>
+                <th>Requisition Qty</th>
+                <th>Requisition Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in report %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.item_details }}</td>
+                    <td>{{ item.brand_name }}</td>
+                    <td>{{ item.unit }}</td>
+                    <td>{{ item.requisition_qty }}</td>
+                    <td>{{ item.requisition_date }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Add report button -->
+    <div class="button-container">
+        <a href="{% url 'add_report' requisition_no %}" class="add-report-button">Add Report</a>
+    </div>
+
+    <!-- Add report popup form -->
+    <div id="add-report-popup" class="popup">
+        <div class="popup-content">
+            <span class="close">&times;</span>
+            <h2>Add Report</h2>
+            <form action="{% url 'add_report' requisition_no %}" method="POST" id="report-form">
+                {% csrf_token %}
+                <!-- Add report form fields -->
+                <label for="item-details">Item Details:</label>
+                <input type="text" name="item_details" id="item-details" required>
+                <br>
+                <label for="brand-name">Brand Name:</label>
+                <input type="text" name="brand_name" id="brand-name" required>
+                <br>
+                <label for="unit">Unit:</label>
+                <input type="text" name="unit" id="unit" required>
+                <br>
+                <label for="requisition-qty">Requisition Qty:</label>
+                <input type="number" name="requisition_qty" id="requisition-qty" required>
+                <br>
+                <label for="requisition-date">Requisition Date:</label>
+                <input type="date" name="requisition_date" id="requisition-date" required>
+                <br>
+                <br>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+     <!-- Department Head -->
+     {% for item in approval %}
+     
+     <label for="department-head">Department Head:</label>
+     <br>
+     <!-- Name -->
+     <label for="username">Username: {{item.username}}</label>
+     <br>
+     <!-- Status -->
+     <label for="status">Status: {{item.get_status_display}}</label>
+     <br>
+     {% endfor %}
+    <script>
+        // Get the elements
+        const addReportButton = document.querySelector(".add-report-button");
+        const addReportPopup = document.getElementById("add-report-popup");
+        const closeButton = document.querySelector(".close");
+        const reportForm = document.getElementById("report-form");
+
+        // Open the popup
+        addReportButton.addEventListener("click", function(event) {
+            event.preventDefault();
+            addReportPopup.style.display = "block";
+        });
+
+        // Close the popup
+        closeButton.addEventListener("click", function() {
+            addReportPopup.style.display = "none";
+        });
+
+        // Submit the form
+        reportForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            reportForm.submit();
+        });
+    </script>
+</body>
+</html>

@@ -4,6 +4,8 @@ from .models import Requisition,  Issue, StoreBalance, Purchase, Transaction, Pr
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .models import Requisition
+from .models import Requisition, Report
+from .forms import ReportForm
 
 def home_page(request):
     return render(request, 'homepage.html')
@@ -20,33 +22,89 @@ def create_requisition(request):
         form = RequisitionForm()
     return render(request, 'create_requisition.html', {'form': form})
 
+
+def report_view(request, requisition_no):
+    # Add your logic to retrieve the report details based on the requisition_no
+    # You can pass the report details to the template or render the report page here
+    report = Report.objects.filter(requisition_no=requisition_no)
+    approval = Approval.objects.filter(requisition_no=requisition_no)
+    for i in approval:
+        print(i.approval_role)
+        
+    return render(request, 'report.html', {'requisition_no': requisition_no,'report':report,'approval':approval})
+
+
+def add_report(request, requisition_no):
+    requisition = Requisition.objects.get(requisition_no=requisition_no)
+    
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.requisition_no = requisition
+            report.save()
+            return redirect('report', requisition_no=requisition_no)
+    else:
+        form = ReportForm()
+    
+    return render(request, 'report.html', {'form': form, 'requisition': requisition, 'requisition_no': requisition_no})
+
+
+
+
+
+from django.shortcuts import render, redirect
+from .models import Approval
+from .forms import ApprovalForm
+
 def department_head(request):
-    # Retrieve the requisitions from the database
     requisitions = Requisition.objects.all()
-    return render(request, 'department_head.html', {'requisitions': requisitions})
-
-
+    form = ApprovalForm()
+    return render(request, 'department_head.html', {'requisitions': requisitions, 'form': form})
 
 def update_approval_status(request):
     if request.method == 'POST':
+        form = ApprovalForm(request.POST)
         requisition_no = request.POST.get('requisition_no')
-        approval_status = request.POST.get('approval_status')
-        approval_role = request.POST.get('approval_role')
-        remarks = request.POST.get('remarks')
-        # Retrieve the requisition from the database
-        try:
-            requisition = Requisition.objects.get(requisition_no=requisition_no)
-        except Requisition.DoesNotExist:
-            return JsonResponse({'error': 'Requisition not found'}, status=404)
+        if form.is_valid():
+            requisition_id = request.POST.get('requisition_no')
+            print(requisition_id)
+            approval = form.save(commit=False)
+            approval.requisition_no= requisition_id
+            approval.save()
+            return redirect('department_head')
+        else:
+            print(form.errors)
+    else:
+        form = ApprovalForm()
 
-        # Update the approval status
-        requisition.approval_status = approval_status
-        requisition.approval_role = approval_role
-        requisition.remark = remarks
-        requisition.save()
+    requisitions = Requisition.objects.all()
+    return render(request, 'department_head.html', {'requisitions': requisitions, 'form': form})
 
-        # Return a success response
-        return JsonResponse({'message': 'Approval status updated successfully'})
+
+
+
+
+# def update_approval_status(request):
+#     if request.method == 'POST':
+#         requisition_no = request.POST.get('requisition_no')
+#         approval_status = request.POST.get('approval_status')
+#         approval_role = request.POST.get('approval_role')
+#         remarks = request.POST.get('remarks')
+#         # Retrieve the requisition from the database
+#         try:
+#             requisition = Requisition.objects.get(requisition_no=requisition_no)
+#         except Requisition.DoesNotExist:
+#             return JsonResponse({'error': 'Requisition not found'}, status=404)
+
+#         # Update the approval status
+#         requisition.approval_status = approval_status
+#         requisition.approval_role = approval_role
+#         requisition.remark = remarks
+#         requisition.save()
+
+#         # Return a success response
+#         return JsonResponse({'message': 'Approval status updated successfully'})
 
     # Redirect to the department_head view if accessed directly
     return redirect('department_head')

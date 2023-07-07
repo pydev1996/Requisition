@@ -179,23 +179,32 @@
                 {% csrf_token %}
                 <input type="hidden" id="requisition-id-input" name="requisition_no" value="">
                 <div class="form-input">
-                    <label for="approval-status-select">Approval Role:</label>
-                    <select id="approval-status-select" name="approval_role">
-                        <option value="Department head">Department head</option>
+                    <label for="username">User Name:</label>
+                    <input type="text" id="username" name="username">
+                </div>
+                <div class="form-input">
+                    <label for="approval-role-select">Approval Role:</label>
+                    <select id="approval-role-select" name="approval_role">
+                        <option value="Department Head">Department Head</option>
                         <option value="Store Executive">Store Executive</option>
                         <option value="Administration">Administration</option>
                     </select>
+                </div>
+                <div class="form-input">
                     <label for="approval-status-select">Approval Status:</label>
-                    <select id="approval-status-select" name="approval_status">
+                    <select id="approval-status-select" name="status" required>
                         <option value="Pending">Pending</option>
                         <option value="Approved">Approved</option>
                         <option value="Rejected">Rejected</option>
                     </select>
-                    <label for="approval-status-select">Remarks:</label>
-                    <input type="text" id="requisition-id-input" name="remarks" value="">
+                </div>
+                <div class="form-input">
+                    <label for="remark">Remarks:</label>
+                    <input type="text" id="remark" name="remark" required>
                 </div>
                 <button type="submit" class="submit-button">Update</button>
             </form>
+            
         </div>
     </div>
 

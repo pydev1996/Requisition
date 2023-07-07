@@ -57,32 +57,33 @@
         </div>
         </div>
     {% if requisitions %}
-        <table>
-            <thead>
+    <table>
+        <thead>
+            <tr>
+                <th>Created By</th>
+                <th>Department Name</th>
+                <th>Requisition Date</th>
+                <th>Requisition No.</th>
+                <th>Remark</th>
+                <th>Approval Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for requisition in requisitions %}
                 <tr>
-                    <th>User Name</th>
-                    <th>Department Name</th>
-                    <th>Requisition Date</th>
-                    <th>Requisition No.</th>
-                    <th>Product Name.</th>
-                    <th>Remark</th>
-                    <th>Approval Status</th>
+                    <td>{{ requisition.user_name }}</td>
+                    <td>{{ requisition.department_name }}</td>
+                    <td>{{ requisition.requisition_date }}</td>
+                    <td>{{ requisition.requisition_no }}</td>
+                    <td>{{ requisition.remark }}</td>
+                    <td>{{ requisition.get_approval_status_display }}</td>
+                    <td><a href="{% url 'report' requisition.requisition_no %}" target="_blank">View Report</a></td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for requisition in requisitions %}
-                    <tr>
-                        <td>{{ requisition.user_name }}</td>
-                        <td>{{ requisition.department_name }}</td>
-                        <td>{{ requisition.requisition_date }}</td>
-                        <td>{{ requisition.requisition_no }}</td>
-                        <td>{{ requisition.products }}</td>
-                        <td>{{ requisition.remark }}</td>
-                        <td>{{ requisition.get_approval_status_display }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+            {% endfor %}
+        </tbody>
+    </table>
+    
     {% else %}
         <p class="empty-message">No requisitions found.</p>
     {% endif %}

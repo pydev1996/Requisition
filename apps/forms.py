@@ -6,6 +6,7 @@ from .models import CustomUser
 
 from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser
+from .models import Report
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
@@ -18,7 +19,10 @@ class RequisitionForm(forms.ModelForm):
     class Meta:
         model = Requisition
         fields = '__all__'
-
+class ReportForm(forms.ModelForm):
+    class Meta:
+        model = Report
+        fields = ['item_details', 'brand_name', 'unit', 'requisition_qty', 'requisition_date']
 
 
 class IssueForm(forms.ModelForm):
@@ -45,3 +49,13 @@ class ProductListForm(forms.ModelForm):
     class Meta:
         model = ProductList
         fields = '__all__'
+from django import forms
+from .models import Approval
+
+
+class ApprovalForm(forms.ModelForm):
+   
+
+    class Meta:
+        model = Approval
+        fields = ['username','requisition_no', 'approval_role', 'status', 'remark']

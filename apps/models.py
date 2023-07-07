@@ -22,7 +22,7 @@ class Requisition(models.Model):
     department_name = models.CharField(max_length=100)
     requisition_date = models.DateField(default=datetime.today())
     requisition_no = models.AutoField(primary_key=True)
-    products = models.CharField(max_length=100,default="")
+    #products = models.CharField(max_length=100,default="")
     remark = models.TextField(blank=True)
     role_choices=(
         ('Department Head','Department Head'),
@@ -42,9 +42,18 @@ class Requisition(models.Model):
 
 
     def __str__(self):
-        return self.user_name
+        return str(self.requisition_no)
 
+class Report(models.Model):
+    requisition_no = models.ForeignKey(Requisition, on_delete=models.CASCADE, to_field='requisition_no')
+    item_details = models.CharField(max_length=100)
+    brand_name = models.CharField(max_length=50)
+    unit = models.CharField(max_length=20)
+    requisition_qty = models.IntegerField()
+    requisition_date = models.DateField()
 
+    def __str__(self):
+        return self.item_details
 
 class Workorder(models.Model):
     workorder_no = models.AutoField(primary_key=True)
@@ -88,3 +97,29 @@ class Transaction(models.Model):
 class ProductList(models.Model):
     material_name = models.CharField(max_length=100)
     brand = models.CharField(max_length=100)
+
+from django.db import models
+
+class Approval(models.Model):
+    username=models.CharField(max_length=100,default="")
+    APPROVAL_ROLES = (
+        ('Department Head', 'Department Head'),
+        ('Store Executive', 'Store Executive'),
+        ('Administration', 'Administration'),
+    )
+
+    requisition_no = models.CharField(max_length=100)
+    approval_role = models.CharField(max_length=50, choices=APPROVAL_ROLES)
+    STATUS_CHOICES = (
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    )
+
+    # Other fields...
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    remark=models.CharField(max_length=100,default="")
+
+    def __str__(self):
+        return self.requisition_no
