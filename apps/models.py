@@ -89,8 +89,8 @@ class StoreBalance(models.Model):
 
 class Purchase(models.Model):
     purchase_no = models.AutoField(primary_key=True)
-    requisition = models.ForeignKey(Requisition, on_delete=models.CASCADE)
-    workorder = models.ForeignKey(Workorder, on_delete=models.CASCADE)
+    requisition = models.IntegerField()
+    workorder = models.IntegerField()
     attach_file = models.FileField(upload_to='purchases/')
 
 class Transaction(models.Model):

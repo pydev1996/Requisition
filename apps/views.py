@@ -256,6 +256,13 @@ def update_approval_status3(request):
 
 def workorder_list(request):
     workorders = Workorder.objects.all()
+    requisition_no = request.GET.get('requisition_no')
+    
+   
+    if requisition_no:
+        workorders = Workorder.objects.filter(requisition=requisition_no)
+    else:
+        workorders = Workorder.objects.all()
     return render(request, 'workorder_list.html', {'workorders': workorders})
 
 
@@ -300,17 +307,17 @@ def create_store_balance(request):
         form = StoreBalanceForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('store_balance_list')
+            return redirect('create_store_balance')
     else:
         form = StoreBalanceForm()
     return render(request, 'create_store_balance.html', {'form': form})
 
 def create_purchase(request):
     if request.method == 'POST':
-        form = PurchaseForm(request.POST)
+        form = PurchaseForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('purchase_list')
+            return redirect('create_purchase')
     else:
         form = PurchaseForm()
     return render(request, 'create_purchase.html', {'form': form})
@@ -341,7 +348,20 @@ def requisition_list(request,username):
 
 
 def issue_list(request):
-    issues = Issue.objects.filter(status="Accepted")
+    username_filter = request.GET.get('username')
+    
+   
+    if username_filter:
+        issues = Issue.objects.filter(user_name=username_filter)
+    else:
+        issues = Issue.objects.filter(status="Accepted")
+    issues2 = Issue.objects.filter(status="Accepted")
+    
+    for i in issues2:
+        sb= StoreBalance.objects.filter(product_name=i.product_name)
+        for j in sb:
+            j.quantity=j.quantity-i.quantity
+            j.save()
     return render(request, 'issue_list.html', {'issues': issues})
 
 def store_balance_list(request):
@@ -349,8 +369,16 @@ def store_balance_list(request):
     return render(request, 'store_balance_list.html', {'store_balances': store_balances})
 
 def purchase_list(request):
+    requisition_no = request.GET.get('requisition')
     purchases = Purchase.objects.all()
-    return render(request, 'purchase_list.html', {'purchases': purchases})
+
+    if requisition_no:
+        purchases = purchases.filter(requisition=requisition_no)
+
+    context = {
+        'purchases': purchases
+    }
+    return render(request, 'purchase_list.html', context)
 
 def transaction_list(request):
     transactions = Transaction.objects.all()

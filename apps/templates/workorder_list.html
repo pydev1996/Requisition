@@ -44,7 +44,26 @@
             top: 10px;
             left: 20px;
         }
-       
+        .filter-form {
+            margin-bottom: 20px;
+        }
+        
+        .filter-form label {
+            font-weight: bold;
+        }
+        
+        .filter-form input[type="text"] {
+            padding: 4px;
+            width: 200px;
+        }
+        
+        .filter-form input[type="submit"] {
+            padding: 4px 8px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
         
 
     </style>
@@ -57,6 +76,11 @@
         </div>
         </div>
     <h1>Work Order List</h1>
+    <form class="filter-form" method="get">
+        <label for="username-filter">Filter by Requistion No.:</label>
+        <input type="text" id="username-filter" name="requisition_no">
+        <input type="submit" value="Filter">
+    </form>
     {% if workorders %}
     <table>
         <thead>

@@ -26,26 +26,45 @@
             background-color: white;
             padding: 20px;
             text-align: center;
-            }
+        }
 
-            .banner h1 {
+        .banner h1 {
             color: #ec2727;
             font-size: 34px;
-            }
+        }
 
-            .banner .logo img {
+        .banner .logo img {
             width: 190px;
             height: auto;
             margin-top: 20px;
-            }
-            .logo {
+        }
+        
+        .logo {
             position: absolute;
-    
             top: 10px;
             left: 20px;
         }
-       
         
+        .filter-form {
+            margin-bottom: 20px;
+        }
+        
+        .filter-form label {
+            font-weight: bold;
+        }
+        
+        .filter-form input[type="text"] {
+            padding: 4px;
+            width: 200px;
+        }
+        
+        .filter-form input[type="submit"] {
+            padding: 4px 8px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -54,16 +73,21 @@
         <div class="logo">
             <img src="/static/images/logo.png" alt="Logo">
         </div>
-        </div>
-        <h1>Transaction list: 
-        </h1>
+    </div>
+    <h1>Transaction list:</h1>
+    
+    <form class="filter-form" method="get">
+        <label for="username-filter">Filter by Username:</label>
+        <input type="text" id="username-filter" name="username">
+        <input type="submit" value="Filter">
+    </form>
+    
     {% if issues %}
         <table>
             <thead>
                 <tr>
                     <th>Transaction No.</th>
                     <th>User Name</th>
-                    <th>User ID</th>
                     <th>Department Name</th>
                     <th>Product Name</th>
                     <th>Quantity</th>
@@ -76,7 +100,6 @@
                     <tr>
                         <td>{{ issue.issue_no }}</td>
                         <td>{{ issue.user_name }}</td>
-                        <td>{{ issue.user_id }}</td>
                         <td>{{ issue.department_name }}</td>
                         <td>{{ issue.product_name }}</td>
                         <td>{{ issue.quantity }}</td>

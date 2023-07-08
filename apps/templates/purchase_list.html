@@ -2,15 +2,87 @@
 <html>
 <head>
     <title>Purchase List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .filter-form {
+            margin-bottom: 20px;
+        }
+
+        .filter-form input[type="text"] {
+            padding: 8px;
+        }
+
+        .filter-form button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <h1>Purchase List</h1>
-    <ul>
-        {% for purchase in purchases %}
-            <li>{{ purchase }}</li>
-        {% empty %}
-            <li>No purchases found.</li>
-        {% endfor %}
-    </ul>
+    <div class="filter-form">
+        <form method="GET">
+            <input type="text" name="requisition" placeholder="Filter by Requisition No." value="{{ request.GET.requisition_no }}">
+            <button type="submit">Filter</button>
+        </form>
+    </div>
+    {% if purchases %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Purchase No.</th>
+                    <th>Requisition</th>
+                    <th>Work Order</th>
+                    <th>Attach File</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for purchase in purchases %}
+                    <tr>
+                        <td>{{ purchase.purchase_no }}</td>
+                        <td>{{ purchase.requisition }}</td>
+                        <td>{{ purchase.workorder }}</td>
+                        <td>
+                            {% if purchase.attach_file %}
+                                <a href="{{ purchase.attach_file.url }}" target="_blank">View File</a>
+                            {% else %}
+                                No file attached
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No purchases found.</p>
+    {% endif %}
 </body>
 </html>
