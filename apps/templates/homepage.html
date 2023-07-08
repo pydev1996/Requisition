@@ -91,27 +91,68 @@
             top: 10px;
             left: 20px;
         }
-       
-        
+       .banner h2{
+        color:blue;
+        text-align: right;
+       }
+       .popup-container {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+        height: 400px;
+        background-color: #fff;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 9999;
+    }
+    
+    /* Styling for the popup overlay */
+    .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9998;
+    }
+    
+    /* Styling for the close button */
+    .popup-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
 
     </style>
 </head>
 <body>
     <div class="banner">
     <h1>Requisition Management System</h1>
+    <h2>Welcome, {{ username }}!</h2>
+
     <div class="logo">
         <img src="/static/images/logo.png" alt="Logo">
     </div>
+    
     </div>
     <div class="content">
     <div class="buttons">
         <div class="dropdown">
             <a href="#" class="button">Requisition</a>
             <div class="dropdown-content">
-                <a href="requisition/create/">Create Requisition</a>
-                <a href="requisition/list/">Requisition List</a>
-                <a href="workorder/list/">Work Order List</a>
+                <a href="{{ create_requisition_url }}">Create Requisition</a>
+                <a href="{{ requisition_list_url }}">Requisition List</a>
+                <a href="{{ workorder_list_url }}">Work Order List</a>
             </div>
+            
         </div>
         <div class="dropdown">
         <a href="#" class="button">Issue</a>
@@ -124,5 +165,48 @@
         <a href="#" class="button">Product</a>
     </div>
 </div>
+
+
+
+<div class="popup-overlay" id="popup-overlay"></div>
+<div class="popup-container" id="popup-container">
+    <h2>Notifications:</h2>
+    {% for issue in issues %}
+        <div class="issue-notification">
+            <h3>Issue No.: {{ issue.issue_no }}</h3>
+            <p>{{ issue.description }}</p>
+            <p>Status: {{ issue.status }}</p>
+            <form method="POST" action="{% url 'accept_issue' issue.issue_no %}">
+                {% csrf_token %}
+                <button type="submit">Accept</button>
+            </form>
+            <form method="POST" action="{% url 'reject_issue' issue.issue_no %}">
+                {% csrf_token %}
+                <button type="submit">Reject</button>
+            </form>
+        </div>
+    {% empty %}
+        <p>No notifications.</p>
+    {% endfor %}
+    <span class="popup-close" id="popup-close">&times;</span>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var issuesCount = parseInt('{{ issues.count }}');
+        if (issuesCount > 0) {
+            // Show the popup
+            $('#popup-overlay').show();
+            $('#popup-container').show();
+        }
+        
+        // Close the popup when the close button or overlay is clicked
+        $('#popup-close, #popup-overlay').click(function() {
+            $('#popup-overlay').hide();
+            $('#popup-container').hide();
+        });
+    });
+</script>
 </body>
 </html>

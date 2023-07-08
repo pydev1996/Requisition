@@ -18,6 +18,7 @@ class CustomUserCreationForm(UserCreationForm):
 class RequisitionForm(forms.ModelForm):
     class Meta:
         model = Requisition
+        exclude = ['approval_role', 'approval_status']
         fields = '__all__'
 class ReportForm(forms.ModelForm):
     class Meta:
@@ -59,3 +60,26 @@ class ApprovalForm(forms.ModelForm):
     class Meta:
         model = Approval
         fields = ['username','requisition_no', 'approval_role', 'status', 'remark']
+from django import forms
+from django import forms
+from django.contrib.auth.forms import AuthenticationForm
+
+
+class CustomLoginForm(AuthenticationForm):
+    user_type = forms.ChoiceField(choices=[('ADMINISTRATION', 'Administration'),
+        ('DEPARTMENT_HEAD', 'Department Head'),
+        ('STORE_EXECUTIVE', 'Store Executive'),
+        ('NORMAL_USER', 'Normal User'),])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'placeholder': 'Username'})
+        self.fields['password'].widget.attrs.update({'placeholder': 'Password'})
+        self.fields['user_type'].widget.attrs.update({'placeholder': 'User Type'})
+
+    def clean(self):
+        cleaned_data = super().clean()
+        user_type = cleaned_data.get('user_type')
+        # Additional validation or processing logic for user_type if needed
+        return cleaned_data
+

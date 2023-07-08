@@ -13,6 +13,11 @@ class CustomUser(AbstractUser):
     )
 
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES)
+    plain_text_password = models.CharField(max_length=128, blank=True)
+
+    def set_password(self, raw_password):
+        self.plain_text_password = raw_password
+        super().set_password(raw_password)
 
     def __str__(self):
         return self.user_type
@@ -69,7 +74,9 @@ class Issue(models.Model):
     product_name = models.CharField(max_length=100)
     trans_date=models.DateField(default=datetime.today())
     quantity = models.IntegerField()
+    status=models.CharField(max_length=100,default='Initialise')
     remark = models.TextField()
+    notification_status = models.BooleanField(default=False)
     def __str__(self):
         return self.user_name
 

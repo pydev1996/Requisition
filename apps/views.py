@@ -7,8 +7,61 @@ from .models import Requisition
 from .models import Requisition, Report
 from .forms import ReportForm
 
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from .forms import CustomLoginForm
+
+def login_view(request):
+    if request.method == 'POST':
+        form = CustomLoginForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user_type = form.cleaned_data.get('user_type')
+
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                # Additional logic based on user_type
+                return redirect('home_page')  # Redirect to the home page or any other desired URL
+
+    else:
+        form = CustomLoginForm(request)
+
+    return render(request, 'login.html', {'form': form})
+
+
+from django.urls import reverse
 def home_page(request):
-    return render(request, 'homepage.html')
+    username = request.user.username
+    issues = Issue.objects.filter(user_name=username,status='Approved')
+    create_requisition_url = reverse('create_requisition')
+    requisition_list_url = reverse('requisition_list',args=[username])
+    workorder_list_url = reverse('workorder_list')
+    print(issues)
+    return render(request, 'homepage.html', {
+        'username': username,
+        'create_requisition_url': create_requisition_url,
+        'requisition_list_url': requisition_list_url,
+        'workorder_list_url': workorder_list_url,
+        'issues': issues,
+    })
+def accept_issue(request, issue_id):
+    issue = Issue.objects.get(issue_no=issue_id)
+    issue.status = 'Accepted'
+    issue.notification_status = True
+    issue.save()
+    return redirect('home_page')
+    # ... handle the necessary operations after accepting the issue ...
+
+
+def reject_issue(request, issue_id):
+    issue = Issue.objects.get(issue_no=issue_id)
+    issue.status = 'Rejected'
+    issue.notification_status = True
+    issue.save()
+    return redirect('home_page')
+    # ... handle the necessary operations after rejecting the issue ...
 
 def create_requisition(request):
     if request.method == 'POST':
@@ -18,6 +71,8 @@ def create_requisition(request):
             requisition.approval_status = 'PENDING'
             requisition.save()
             return redirect('create_requisition')
+        else:
+            print(form.errors)
     else:
         form = RequisitionForm()
     return render(request, 'create_requisition.html', {'form': form})
@@ -104,7 +159,7 @@ def update_approval_status(request):
     
     return render(request, 'department_head.html', {'requisitions': requisitions, 'form': form})
 def store_executive(request):
-    requisitions = Requisition.objects.all()
+    requisitions = Requisition.objects.filter(approval_status="Approved",approval_role="Department Head")
     form = ApprovalForm()
     return render(request, 'store_executive.html', {'requisitions': requisitions, 'form': form})
 
@@ -217,6 +272,29 @@ def create_issue(request):
         form = IssueForm()
     return render(request, 'create_issue.html', {'form': form})
 
+def notifications(request):
+    st=Issue.objects.filter(status='Initialise')
+    return render(request, 'notification.html', {'st': st})
+
+def update_issue_status(request):
+     if request.method == 'POST':
+        issue_no = request.POST['issue_no']
+        print("Issue No:", issue_no)
+        status = request.POST.get('status')
+        print("Status:", status)
+        status = request.POST.get('status')
+
+        # Update the status field of the Issue object with the provided issue_no
+        issue = Issue.objects.get(issue_no=issue_no)
+        issue.status = status
+        issue.save()
+
+        return redirect('notifications')
+
+    # Handle GET requests if needed
+
+
+
 def create_store_balance(request):
     if request.method == 'POST':
         form = StoreBalanceForm(request.POST)
@@ -257,14 +335,13 @@ def create_product_list(request):
         form = ProductListForm()
     return render(request, 'create_product_list.html', {'form': form})
 
-def requisition_list(request):
-    requisitions = Requisition.objects.all()
-    print(requisitions)
+def requisition_list(request,username):
+    requisitions = Requisition.objects.filter(user_name=username)
     return render(request, 'requisition_list.html', {'requisitions': requisitions})
 
 
 def issue_list(request):
-    issues = Issue.objects.all()
+    issues = Issue.objects.filter(status="Accepted")
     return render(request, 'issue_list.html', {'issues': issues})
 
 def store_balance_list(request):
