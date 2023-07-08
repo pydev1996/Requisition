@@ -146,11 +146,63 @@
   height: 80px;
   vertical-align: middle;
 }
+.navigation {
+    background-color: #546cb9;
+    padding: 10px;
+}
+
+.navigation ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navigation ul li {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.navigation ul li a {
+    font-family: "Segoe UI", Arial, sans-serif;
+    text-decoration: none;
+    color: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+}
+
+.navigation ul li a:hover {
+    background-color: #21c0b8;
+}
+
+.dropdown-content {
+    font-family: "Segoe UI", Arial, sans-serif;
+    display: none;
+    position: absolute;
+    background-color: #1b1b1f;
+    color:black;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: #080808;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
     </style>
 </head>
 <body>
     <div class="banner">
-        <h1>Requisition Management System</h1>
+        <h1>Store Executive</h1>
         <div class="logo">
             <img src="/static/images/logo.png" alt="Logo">
         </div>
@@ -161,7 +213,21 @@
         </div>
         
     </div>
-    <h1>Store Executive</h1>
+    <div class="navigation">
+        <ul>
+            <li class="dropdown">
+                <a href="#" class="dropbtn">Store Balance</a>
+                <div class="dropdown-content">
+                    <a href="{% url 'create_store_balance' %}">Create Store Balance</a>
+                    <a href="{% url 'store_balance_list' %}">Store Balance List</a>
+                </div>
+            </li>
+            <li><a href="{% url 'purchase_list' %}">Purchase List</a></li>
+        </ul>
+    </div>
+    
+    
+    
     <p>Approval Panel</p>
     {% if requisitions %}
         <table>
