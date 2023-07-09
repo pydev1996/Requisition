@@ -68,9 +68,13 @@
 <body>
     <div class="container">
         <h1>Profile Details</h1>
+        {%if photo%}
         <div class="profile-photo">
             <img src="{{ user.photo.url }}" alt="Profile Photo">
         </div>
+        {%else%}
+         <p>No Profile Photo</p>
+        {%endif%}
         <p><strong>Username:</strong>{{ user.username }}</p>
         <p><strong>Full Name:</strong> {{ user.full_name }}</p>
         <p><strong>Department:</strong> {{ user.department }}</p>
