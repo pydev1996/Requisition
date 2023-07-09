@@ -2,15 +2,52 @@
 <html>
 <head>
     <title>Product List List</title>
+    <style>
+        /* CSS styles for table view */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        /* CSS styles for container box */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Product List List</h1>
-    <ul>
-        {% for product_list in product_lists %}
-            <li>{{ product_list }}</li>
-        {% empty %}
-            <li>No product lists found.</li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <h1>Product List</h1>
+        <table>
+            <tr>
+                <th>Material Name</th>
+                <th>Brand</th>
+            </tr>
+            {% for product_list in product_lists %}
+                <tr>
+                    <td>{{ product_list.material_name }}</td>
+                    <td>{{ product_list.brand }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2">No product lists found.</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 </body>
 </html>

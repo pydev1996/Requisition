@@ -86,7 +86,6 @@ class Issue(models.Model):
     quantity = models.IntegerField()
     status=models.CharField(max_length=100,default='Initialise')
     remark = models.TextField()
-    notification_status = models.BooleanField(default=False)
     def __str__(self):
         return self.user_name
 

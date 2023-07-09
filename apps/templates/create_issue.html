@@ -58,7 +58,31 @@
     <h1>Create Issue</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        <label for="user_name">User Name:</label>
+        <input type="text" id="user_name" name="user_name">
+        <br>
+        <label for="department_name">Department Name:</label>
+        <input type="text" id="department_name" name="department_name">
+        <br>
+        <label for="product_name">Product Name:</label>
+        <select id="product_name" name="product_name">
+            {% for product in product_list %}
+                <option value="{{ product }}">{{ product }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="trans_date">date:</label>
+        <input type="date" id="trans_date" name="trans_date">
+        <br>
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity">
+        <br>
+        <label for="remark">Remark:</label>
+        <textarea id="remark" name="remark" rows="4" required></textarea>
+        <br>
+        <label for="status">Status:</label>
+        <input type="text" id="status" name="status" value="Initialise">
+        <br>
         <button type="submit">Create</button>
     </form>
 </body>
