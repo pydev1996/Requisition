@@ -10,7 +10,9 @@ from .forms import ReportForm
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from .forms import CustomLoginForm
+from django.views.decorators.csrf import csrf_protect
 
+@csrf_protect
 def login_view(request):
     if request.method == 'POST':
         form = CustomLoginForm(request, data=request.POST)
@@ -18,17 +20,26 @@ def login_view(request):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user_type = form.cleaned_data.get('user_type')
-
+            
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
                 # Additional logic based on user_type
-                return redirect('home_page')  # Redirect to the home page or any other desired URL
-
+                if user_type == 'DEPARTMENT_HEAD':
+                    return redirect('department_head')
+                elif user_type == 'NORMAL_USER':
+                    return redirect('home_page')
+                elif user_type == 'STORE_EXECUTIVE':
+                    return redirect('store_executive')
+                elif user_type == 'ADMINISTRATION':
+                    return redirect('administrations')
     else:
         form = CustomLoginForm(request)
-
     return render(request, 'login.html', {'form': form})
+ # Redirect to the home page or any other desired URL
+
+  
+
 
 
 from django.urls import reverse
@@ -100,6 +111,8 @@ def add_report(request, requisition_no):
             report.requistion_date=requisition.requisition_date
             report.save()
             return redirect('report', requisition_no=requisition_no)
+        else:
+            print(form.errors)
     else:
         form = ReportForm()
     
@@ -135,7 +148,7 @@ def update_status(requisition_id):
 
 
 def department_head(request):
-    requisitions = Requisition.objects.all()
+    requisitions = Requisition.objects.filter(approval_status="Pending")
     form = ApprovalForm()
     return render(request, 'department_head.html', {'requisitions': requisitions, 'form': form})
 
@@ -343,7 +356,13 @@ def create_product_list(request):
     return render(request, 'create_product_list.html', {'form': form})
 
 def requisition_list(request,username):
-    requisitions = Requisition.objects.filter(user_name=username)
+    
+    requisition_number = request.GET.get('requisition_number')
+
+    if requisition_number:
+        requisitions = Requisition.objects.filter(requisition_no=requisition_number,user_name=username)
+    else:
+        requisitions = Requisition.objects.filter(user_name=username)
     return render(request, 'requisition_list.html', {'requisitions': requisitions})
 
 
