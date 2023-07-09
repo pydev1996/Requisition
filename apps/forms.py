@@ -44,6 +44,7 @@ class ReportForm(forms.ModelForm):
         fields = ['item_details', 'brand_name', 'unit', 'requisition_qty', 'requisition_date']
 
 
+
 class IssueForm(forms.ModelForm):
     class Meta:
         model = Issue

@@ -37,7 +37,6 @@ class Requisition(models.Model):
     department_name = models.CharField(max_length=100)
     requisition_date = models.DateField(default=datetime.today())
     requisition_no = models.AutoField(primary_key=True)
-    #products = models.CharField(max_length=100,default="")
     remark = models.TextField(blank=True)
     role_choices=(
         ('Department Head','Department Head'),
@@ -52,7 +51,7 @@ class Requisition(models.Model):
         ('APPROVED', 'Approved'),
         ('REJECTED', 'Rejected'),
     )
-    approval_status = models.CharField(max_length=10, choices=APPROVAL_CHOICES, default='PENDING')
+    approval_status = models.CharField(max_length=20, choices=APPROVAL_CHOICES, default='PENDING')
 
 
 

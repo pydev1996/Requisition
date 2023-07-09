@@ -227,27 +227,35 @@
         <div class="popup-content">
             <span class="close">&times;</span>
             <h2>Add Report</h2>
-            <form action="{% url 'add_report' requisition_no %}" method="POST" id="report-form">
+            <form action="{% url 'add_report' requisition_no %}" method="POST">
                 {% csrf_token %}
-                <!-- Add report form fields -->
-                <label for="item-details">Item Details:</label>
-                <input type="text" name="item_details" id="item-details" required>
+                <label for="item_details">Item Details:</label>
+                <select id="item_details" name="item_details">
+                    {% for product in product_list %}
+                        <option value="{{ product.material_name }}">{{ product.material_name }}</option>
+                    {% endfor %}
+                </select>
                 <br>
-                <label for="brand-name">Brand Name:</label>
-                <input type="text" name="brand_name" id="brand-name" required>
+                <label for="brand_name">Brand Name:</label>
+                <select id="brand_name" name="brand_name">
+                    {% for product in product_list %}
+                        <option value="{{ product.brand }}">{{ product.brand }}</option>
+                    {% endfor %}
+                </select>
                 <br>
                 <label for="unit">Unit:</label>
-                <input type="text" name="unit" id="unit" required>
+                <input type="text" id="unit" name="unit" required>
                 <br>
-                <label for="requisition-qty">Requisition Qty:</label>
-                <input type="number" name="requisition_qty" id="requisition-qty" required>
+                <label for="requisition_qty">Requisition Qty:</label>
+                <input type="number" id="requisition_qty" name="requisition_qty" required>
                 <br>
-                <label for="requisition-date">Requisition date:</label>
-                <input type="date" name="requisition_date" id="requisition-date" required>
-                <br>
+                <label for="requisition_date">Requisition Date:</label>
+                <input type="date" id="requisition_date" name="requisition_date" required>
                 <br>
                 <button type="submit">Submit</button>
             </form>
+            
+            
         </div>
     </div>
     <div class="container">

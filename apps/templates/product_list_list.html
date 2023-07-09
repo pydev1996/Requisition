@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Product List List</title>
+    <title>Product List</title>
     <style>
         /* CSS styles for table view */
+        body{
+            background-color: #F2F3F5;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -21,17 +24,37 @@
         
         /* CSS styles for container box */
         .container {
+            background-color: #ffff;
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+
+        /* CSS styles for logo and heading */
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo img {
+            max-width: 150px;
+            height: auto;
+        }
+        
+        .heading {
+            text-align: center;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Product List</h1>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Logo">
+        </div>
+        <h1 class="heading">Product List</h1>
         <table>
             <tr>
                 <th>Material Name</th>
