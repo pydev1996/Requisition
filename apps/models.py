@@ -14,6 +14,16 @@ class CustomUser(AbstractUser):
 
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES)
     plain_text_password = models.CharField(max_length=128, blank=True)
+    full_name = models.CharField(max_length=100,default='')
+    department = models.CharField(max_length=100,default='')
+    designation = models.CharField(max_length=100,default='')
+    join_date = models.DateField(blank=True, null=True)
+    dob = models.DateField(blank=True, null=True)
+    blood_group = models.CharField(max_length=10,default='Unknown')
+    phone_number = models.CharField(max_length=20,default='')
+    primary_email = models.EmailField(blank=True, null=True)
+    secondary_email = models.EmailField(blank=True, null=True)
+    photo = models.ImageField(upload_to='profile_photos', blank=True, null=True)
 
     def set_password(self, raw_password):
         self.plain_text_password = raw_password

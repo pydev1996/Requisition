@@ -172,7 +172,12 @@ def update_approval_status(request):
     
     return render(request, 'department_head.html', {'requisitions': requisitions, 'form': form})
 def store_executive(request):
-    requisitions = Requisition.objects.filter(approval_status="Approved",approval_role="Department Head")
+    requisitions1 = Requisition.objects.filter(approval_status="Approved",approval_role="Store Executive")
+    
+    if len(requisitions1)!=0:
+        requisitions = Requisition.objects.filter(approval_status="Approved",approval_role="Department Head")
+    else:
+        requisitions=[]
     form = ApprovalForm()
     return render(request, 'store_executive.html', {'requisitions': requisitions, 'form': form})
 
@@ -197,7 +202,7 @@ def update_approval_status2(request):
     return render(request, 'store_executive.html', {'requisitions': requisitions, 'form': form})
 
 def administrations(request):
-    requisitions = Requisition.objects.all()
+    requisitions = Requisition.objects.filter(approval_status="Approved",approval_role="Store Executive")
     form = ApprovalForm()
     return render(request, 'administrations.html', {'requisitions': requisitions, 'form': form})
 def workorder(requisition_id):
@@ -213,6 +218,30 @@ def workorder(requisition_id):
             )
             workorder.save()
 
+from django.shortcuts import render, redirect
+from .forms import CustomUserCreationForm
+
+def update_profile(request):
+    user = request.user
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('update_profile')
+        else:
+            print(form.errors)
+            errors = form.errors
+            return render(request, 'update_profile.html', {'form': form, 'errors': errors})
+    else:
+        form = CustomUserCreationForm(instance=user)
+    
+    return render(request, 'update_profile.html', {'form': form})
+
+
+
+def profile_details(request):
+    user = request.user
+    return render(request, 'profile_details.html', {'user': user})
 
 
 

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile Details</title>
+    <style>
+        /* CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        h1 {
+            text-align: center;
+        }
+        
+        p {
+            margin-bottom: 10px;
+        }
+        
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Profile Details</h1>
+    <div class="profile-container">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Full Name:</strong> {{ user.full_name }}</p>
+        <p><strong>Department:</strong> {{ user.department }}</p>
+        <p><strong>Designation:</strong> {{ user.designation }}</p>
+        <!-- Include other profile fields as needed -->
+    </div>
+
+    <div class="links-container">
+        <a href="{% url 'update_profile' %}">Edit Profile</a>
+        <!-- Link to the update profile page -->
+
+        <a href="#">Back to Home</a>
+        <!-- Link back to the home page or any other relevant page -->
+    </div>
+</body>
+</html>

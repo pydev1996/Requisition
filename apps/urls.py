@@ -32,6 +32,8 @@ urlpatterns = [
 
     path('accept_issue/<int:issue_id>/', views.accept_issue, name='accept_issue'),
     path('reject_issue/<int:issue_id>/', views.reject_issue, name='reject_issue'),
+     path('update-profile/', views.update_profile, name='update_profile'),
+    path('profile/', views.profile_details, name='profile_details'),
 
 
 
