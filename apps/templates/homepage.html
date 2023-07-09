@@ -10,7 +10,7 @@
        
         
         .buttons {
-            margin-top: 110px;
+            margin-top: 80px;
         }
         .content{
             background-image: url('/static/images/bg.jpg');
@@ -25,7 +25,7 @@
         .button {
             box-shadow: 5px 5px #888888;
             display: inline-block;
-            padding: 20px 40px;
+            padding: 10px 40px;
             background-color: #5b0583;
             color: #fff;
             font-size: 18px;
@@ -71,7 +71,7 @@
         }
         .banner {
             background-color: white;
-            padding: 20px;
+            padding: 5px;
             text-align: center;
             }
 
@@ -130,6 +130,27 @@
         right: 10px;
         cursor: pointer;
     }
+    .profile{
+        position: fixed;
+        top: 20px;
+        right: 70px;
+    }
+    .profile a {
+        display: block;
+        width: 40px;
+        height: 40px;
+        background-color: #fff;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        line-height: 40px;
+        }
+
+        .profile img {
+        width: 80px;
+        height: 80px;
+        vertical-align: middle;
+        }
 
     </style>
 </head>
@@ -137,7 +158,9 @@
     <div class="banner">
     <h1>Requisition Management System</h1>
     <h2>Welcome, {{ username }}!</h2>
-    <a href="{% url 'profile_details' %}" class="button">Profile</a>
+    <div class="profile">
+    <a href="{% url 'profile_details' %}" ><img src="/static/images/profile.png" alt="Logo"></a>
+    </div>
     <div class="logo">
         <img src="/static/images/logo.png" alt="Logo">
     </div>
@@ -161,8 +184,15 @@
             <a href="issue/list/">TransactionList</a>
            
         </div>
-    </div>
-        <a href="#" class="button">Product</a>
+        </div>
+        <div class="dropdown">
+            <a href="#" class="button">Product</a>
+            <div class="dropdown-content">
+                <a href="issue/create/">Products</a>
+                <a href="{{store_balance_url}}">Store Balance</a>
+            
+            </div>
+        </div>
     </div>
 </div>
 

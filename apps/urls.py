@@ -18,6 +18,7 @@ urlpatterns = [
     path('administrations/',views.administrations,name='administrations'),
     path('homepage/issue/list/', views.issue_list, name='issue_list'),
     path('store_balance/list/', views.store_balance_list, name='store_balance_list'),
+    path('homepage/store_balance/list/', views.store_balance_list, name='store_balance_list'),
     path('purchase/list/', views.purchase_list, name='purchase_list'),
     path('transaction/list/', views.transaction_list, name='transaction_list'),
     path('product_list/list/', views.product_list_list, name='product_list_list'),

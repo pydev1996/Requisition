@@ -18,7 +18,7 @@ class CustomUserAdmin(UserAdmin):
     list_display = UserAdmin.list_display + ('get_plain_text_password',)
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Personal Info', {'fields': ('first_name', 'last_name', 'email', 'user_type')}),
+        ('Personal Info', {'fields': ('first_name', 'last_name', 'email', 'user_type','photo')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important Dates', {'fields': ('last_login', 'date_joined')}),
     )

@@ -49,13 +49,14 @@ def home_page(request):
     create_requisition_url = reverse('create_requisition')
     requisition_list_url = reverse('requisition_list',args=[username])
     workorder_list_url = reverse('workorder_list')
-    print(issues)
+    store_balance_url=reverse('store_balance_list')
     return render(request, 'homepage.html', {
         'username': username,
         'create_requisition_url': create_requisition_url,
         'requisition_list_url': requisition_list_url,
         'workorder_list_url': workorder_list_url,
         'issues': issues,
+        'store_balance_url':store_balance_url,
     })
 def accept_issue(request, issue_id):
     issue = Issue.objects.get(issue_no=issue_id)
@@ -172,6 +173,7 @@ def update_approval_status(request):
     
     return render(request, 'department_head.html', {'requisitions': requisitions, 'form': form})
 def store_executive(request):
+    username = request.user.get_username()
     requisitions1 = Requisition.objects.filter(approval_status="Approved",approval_role="Store Executive")
     
     if len(requisitions1)!=0:
@@ -179,7 +181,7 @@ def store_executive(request):
     else:
         requisitions=[]
     form = ApprovalForm()
-    return render(request, 'store_executive.html', {'requisitions': requisitions, 'form': form})
+    return render(request, 'store_executive.html', {'requisitions': requisitions, 'form': form,'username':username})
 
 
 def update_approval_status2(request):
