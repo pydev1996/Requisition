@@ -138,3 +138,8 @@ class Approval(models.Model):
 
     def __str__(self):
         return self.requisition_no
+
+class DepartmentList(models.Model):
+    department_name=models.CharField(max_length=100)
+    def __str__(self):
+        return self.department_name

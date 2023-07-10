@@ -4,7 +4,7 @@ from .models import Requisition,  Issue, StoreBalance, Purchase, Transaction, Pr
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .models import Requisition
-from .models import Requisition, Report
+from .models import Requisition, Report,DepartmentList
 from .forms import ReportForm
 
 from django.contrib.auth import authenticate, login
@@ -76,6 +76,7 @@ def reject_issue(request, issue_id):
     # ... handle the necessary operations after rejecting the issue ...
 
 def create_requisition(request):
+    deparment_list=DepartmentList.objects.all()
     if request.method == 'POST':
         form = RequisitionForm(request.POST)
         if form.is_valid():
@@ -87,7 +88,7 @@ def create_requisition(request):
             print(form.errors)
     else:
         form = RequisitionForm()
-    return render(request, 'create_requisition.html', {'form': form})
+    return render(request, 'create_requisition.html', {'form': form,'department_list':deparment_list})
 
 
 def report_view(request, requisition_no):
@@ -332,19 +333,20 @@ def workorder_list(request):
 
 
 def create_issue(request):
+    department_list = DepartmentList.objects.all()
     product_list = ProductList.objects.values_list('material_name', flat=True)  # Fetch only the material names
-    
+
     if request.method == 'POST':
         form = IssueForm(request.POST)
         if form.is_valid():
             form.save()
-            
             return redirect('create_issue')
         else:
             print(form.errors)
     else:
         form = IssueForm()
-    return render(request, 'create_issue.html', {'form': form,'product_list': product_list})
+
+    return render(request, 'create_issue.html', {'form': form, 'department_list': department_list, 'product_list': product_list})
 
 def notifications(request):
     st=Issue.objects.filter(status='Initialise')

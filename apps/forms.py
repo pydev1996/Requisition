@@ -1,5 +1,5 @@
 from django import forms
-from .models import Requisition ,Issue, StoreBalance, Purchase, Transaction, ProductList
+from .models import Requisition ,Issue, StoreBalance, Purchase, Transaction, ProductList,DepartmentList
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser
@@ -101,4 +101,7 @@ class CustomLoginForm(AuthenticationForm):
         user_type = cleaned_data.get('user_type')
         # Additional validation or processing logic for user_type if needed
         return cleaned_data
-
+class DeparmentListForm(forms.ModelForm):
+    class Meta:
+        model = DepartmentList
+        fields = '__all__'
