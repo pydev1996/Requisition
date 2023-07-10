@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from .models import Requisition
 from .models import Requisition, Report,DepartmentList
 from .forms import ReportForm
+import easygui
 
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
@@ -63,6 +64,13 @@ def accept_issue(request, issue_id):
     issue.status = 'Accepted'
     issue.notification_status = True
     issue.save()
+    issues2 = Issue.objects.filter(status="Accepted") 
+    for i in issues2:
+            sb= StoreBalance.objects.filter(product_name=i.product_name)
+            for j in sb:
+                j.quantity=j.quantity-i.quantity
+                j.save()
+
     return redirect('home_page')
     # ... handle the necessary operations after accepting the issue ...
 
@@ -83,6 +91,7 @@ def create_requisition(request):
             requisition = form.save(commit=False)
             requisition.approval_status = 'PENDING'
             requisition.save()
+            easygui.msgbox('Successfully Create Requisition', 'Success')
             return redirect('create_requisition')
         else:
             print(form.errors)
@@ -194,11 +203,8 @@ def update_approval_status(request):
 def store_executive(request):
     username = request.user.get_username()
     requisitions1 = Requisition.objects.filter(approval_status="APPROVED",approval_role="Store Executive")
-    print(requisitions1)
-    #update_status("2")
     if len(requisitions1)==0:
         requisitions = Requisition.objects.filter(approval_status="APPROVED",approval_role="Department Head")
-        print(requisitions)
     else:
         requisitions=[]
     form = ApprovalForm()
@@ -340,6 +346,7 @@ def create_issue(request):
         form = IssueForm(request.POST)
         if form.is_valid():
             form.save()
+            easygui.msgbox('Successfully Create Issue', 'Success')
             return redirect('create_issue')
         else:
             print(form.errors)
@@ -349,7 +356,8 @@ def create_issue(request):
     return render(request, 'create_issue.html', {'form': form, 'department_list': department_list, 'product_list': product_list})
 
 def notifications(request):
-    st=Issue.objects.filter(status='Initialise')
+    st=Issue.objects.filter(status='Initialize')
+    print(st)
     return render(request, 'notification.html', {'st': st})
 
 def update_issue_status(request):
@@ -358,13 +366,12 @@ def update_issue_status(request):
         print("Issue No:", issue_no)
         status = request.POST.get('status')
         print("Status:", status)
-        status = request.POST.get('status')
 
         # Update the status field of the Issue object with the provided issue_no
         issue = Issue.objects.get(issue_no=issue_no)
         issue.status = status
         issue.save()
-
+        
         return redirect('notifications')
 
     # Handle GET requests if needed
@@ -425,19 +432,11 @@ def requisition_list(request,username):
 
 def issue_list(request):
     username_filter = request.GET.get('username')
-    
-   
     if username_filter:
         issues = Issue.objects.filter(user_name=username_filter)
     else:
         issues = Issue.objects.filter(status="Accepted")
-    issues2 = Issue.objects.filter(status="Accepted")
     
-    for i in issues2:
-        sb= StoreBalance.objects.filter(product_name=i.product_name)
-        for j in sb:
-            j.quantity=j.quantity-i.quantity
-            j.save()
     return render(request, 'issue_list.html', {'issues': issues})
 
 def store_balance_list(request):
