@@ -154,10 +154,11 @@ def update_status(requisition_id):
 
 
 def department_head(request):
+    username=request.user.username
     requisitions = Requisition.objects.filter(approval_status="PENDING")
     
     form = ApprovalForm()
-    return render(request, 'department_head.html', {'requisitions': requisitions, 'form': form})
+    return render(request, 'department_head.html', {'requisitions': requisitions, 'form': form,'username':username})
 
 
 def update_approval_status(request):
@@ -233,10 +234,10 @@ def update_approval_status2(request):
     return render(request, 'store_executive.html', {'requisitions': requisitions, 'form': form})
 
 def administrations(request):
-    
+    username=request.user.username
     requisitions = Requisition.objects.filter(approval_status="APPROVED",approval_role="Store Executive")
     form = ApprovalForm()
-    return render(request, 'administrations.html', {'requisitions': requisitions, 'form': form})
+    return render(request, 'administrations.html', {'requisitions': requisitions, 'form': form,'username':username})
 def workorder(requisition_id):
     approvals = Approval.objects.filter(requisition_no=requisition_id,approval_role='Administration')
     requisition = Requisition.objects.get(requisition_no=requisition_id)
@@ -314,29 +315,7 @@ def update_approval_status3(request):
 
 
 
-# def update_approval_status(request):
-#     if request.method == 'POST':
-#         requisition_no = request.POST.get('requisition_no')
-#         approval_status = request.POST.get('approval_status')
-#         approval_role = request.POST.get('approval_role')
-#         remarks = request.POST.get('remarks')
-#         # Retrieve the requisition from the database
-#         try:
-#             requisition = Requisition.objects.get(requisition_no=requisition_no)
-#         except Requisition.DoesNotExist:
-#             return JsonResponse({'error': 'Requisition not found'}, status=404)
 
-#         # Update the approval status
-#         requisition.approval_status = approval_status
-#         requisition.approval_role = approval_role
-#         requisition.remark = remarks
-#         requisition.save()
-
-#         # Return a success response
-#         return JsonResponse({'message': 'Approval status updated successfully'})
-
-    # Redirect to the department_head view if accessed directly
-    return redirect('department_head')
 
 def workorder_list(request):
     workorders = Workorder.objects.all()

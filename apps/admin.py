@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
 from .forms import CustomUserCreationForm
-from .models import Approval,Requisition,Report,Workorder,Issue,ProductList,Purchase
+from .models import Approval,Requisition,Report,Workorder,Issue,ProductList,Purchase,StoreBalance
 
 class CustomUserAdmin(UserAdmin):
     #change_form_template = 'admin/auth/user/change_form.html'
@@ -30,10 +30,11 @@ class CustomUserAdmin(UserAdmin):
     )
 
 admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(Approval)
-admin.site.register(Requisition)
-admin.site.register(Report)
-admin.site.register(Workorder)
-admin.site.register(Issue)
 admin.site.register(ProductList)
-admin.site.register(Purchase)
+#admin.site.register(StoreBalance)
+# admin.site.register(Approval)
+# admin.site.register(Requisition)
+# admin.site.register(Report)
+# admin.site.register(Workorder)
+# admin.site.register(Issue)
+# admin.site.register(Purchase)

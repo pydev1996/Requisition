@@ -141,15 +141,26 @@
         }
 
         .profile img {
-        width: 80px;
-        height: 80px;
+        width: 60px;
+        height: 60px;
         vertical-align: middle;
         }
+        h2{
+            font-size: 20px;
+            position: fixed;
+        top: 60px;
+        right: 40px;
+        }
+        .navigation {
+    background-color: #546cb9;
+    padding: 10px;
+}
     </style>
 </head>
 <body>
     <div class="banner">
-        <h1>Requisition Management System</h1>
+        <h1>Administration</h1>
+        <h2>Welcome, {{ username }}!</h2> 
         <div class="profile">
             <a href="{% url 'profile_details' %}" ><img src="/static/images/profile.png" alt="Logo"></a>
             </div>
@@ -157,7 +168,8 @@
             <img src="/static/images/logo.png" alt="Logo">
         </div>
     </div>
-    <h1>Administrations</h1>
+    <div class="navigation"></div>
+    
     {% if requisitions %}
         <table>
             <thead>
@@ -188,7 +200,7 @@
             </tbody>
         </table>
     {% else %}
-        <p class="empty-message">No requisitions found.</p>
+        <p class="empty-message">No requisitions found for Approval</p>
     {% endif %}
 
     <!-- Popup HTML -->
