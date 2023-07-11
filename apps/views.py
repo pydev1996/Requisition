@@ -4,7 +4,7 @@ from .models import Requisition,  Issue, StoreBalance, Purchase, Transaction, Pr
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .models import Requisition
-from .models import Requisition, Report,DepartmentList
+from .models import Requisition, Report,DepartmentList,CustomUser
 from .forms import ReportForm
 import easygui
 
@@ -16,27 +16,47 @@ from django.views.decorators.csrf import csrf_protect
 @csrf_protect
 def login_view(request):
     if request.method == 'POST':
-        form = CustomLoginForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user_type = form.cleaned_data.get('user_type')
-            
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                # Additional logic based on user_type
-                if user_type == 'DEPARTMENT_HEAD':
-                    return redirect('department_head')
-                elif user_type == 'NORMAL_USER':
-                    return redirect('home_page')
-                elif user_type == 'STORE_EXECUTIVE':
-                    return redirect('store_executive')
-                elif user_type == 'ADMINISTRATION':
-                    return redirect('administrations')
-    else:
-        form = CustomLoginForm(request)
+        username = request.POST['username']
+        password = request.POST['password']
+        user_type = request.POST['user_type']
+        user1 = CustomUser.objects.get(username=username)
+        if username== user1.username and user1.check_password(password) and user_type==user1.user_type:
+            if user_type == 'DEPARTMENT_HEAD':
+                return redirect('department_head')
+            elif user_type == 'NORMAL_USER':
+                return redirect('home_page')
+            elif user_type == 'STORE_EXECUTIVE':
+                return redirect('store_executive')
+            elif user_type == 'ADMINISTRATION':
+                return redirect('administrations')
+        else:
+            easygui.msgbox('Your Credentials are incorrect. Please Give Correct Username or password or usertype.', 'Fail')
+    form = CustomLoginForm(request)
     return render(request, 'login.html', {'form': form})
+    #     form = CustomLoginForm(request, data=request.POST)
+    #     if form.is_valid():
+    #         username = form.cleaned_data.get('username')
+    #         password = form.cleaned_data.get('password')
+    #         user_type = form.cleaned_data.get('user_type')
+    #         user1 = CustomUser.objects.get(username=username)
+    #         user = authenticate(request, username=username, password=password,user_type=user_type)
+    #         print(user1.username)
+    #         if user is not None:
+    #             login(request, user)
+    #             # Additional logic based on user_type
+    #             if user_type == 'DEPARTMENT_HEAD':
+    #                 return redirect('department_head')
+    #             elif user_type == 'NORMAL_USER':
+    #                 return redirect('home_page')
+    #             elif user_type == 'STORE_EXECUTIVE':
+    #                 return redirect('store_executive')
+    #             elif user_type == 'ADMINISTRATION':
+    #                 return redirect('administrations')
+    #     else:
+    #         easygui.msgbox('Your Credentials are incorrect. Please Give Correct Username or password or usertype.', 'Fail')
+    # else:
+    #     form = CustomLoginForm(request)
+    
  # Redirect to the home page or any other desired URL
 
   
@@ -259,12 +279,13 @@ def workorder(requisition_id):
             workorder.save()
 
 from django.shortcuts import render, redirect
-from .forms import CustomUserCreationForm
+from .forms import ProfileUpdateForm
 
 def update_profile(request):
     user = request.user
+    
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST, request.FILES, instance=user)
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             form.save()
             return redirect('update_profile')
@@ -273,9 +294,31 @@ def update_profile(request):
             errors = form.errors
             return render(request, 'update_profile.html', {'form': form, 'errors': errors})
     else:
-        form = CustomUserCreationForm(instance=user)
+        form = ProfileUpdateForm(instance=user)
     
     return render(request, 'update_profile.html', {'form': form})
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.models import User
+from django.contrib import messages
+
+def update_credentials(request):
+    if not request.user.is_authenticated:
+        return redirect('login_view')  # Redirect to the login page if the user is not authenticated
+
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+
+        if form.is_valid():
+            user = form.save()
+            easygui.msgbox('Your password has been changed successfully. Please log in again.', 'Success')
+           
+            return redirect('login_view')  # Redirect to the login page
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render(request, 'update_credentials.html', {'form': form})
 
 
 

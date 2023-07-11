@@ -1,12 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
-from .forms import CustomUserCreationForm
+
 from .models import Approval,Requisition,Report,Workorder,Issue,ProductList,Purchase,StoreBalance,DepartmentList
 
 class CustomUserAdmin(UserAdmin):
-    #change_form_template = 'admin/auth/user/change_form.html'
-    add_form = CustomUserCreationForm
+    #add_form = CustomUserCreationForm
     model = CustomUser
     list_display = ('username', 'email', 'user_type')
     def get_plain_text_password(self, obj):

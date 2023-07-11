@@ -12,24 +12,30 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from .models import CustomUser
 
-class CustomUserCreationForm(UserCreationForm):
-    full_name = forms.CharField(max_length=100)
-    department = forms.CharField(max_length=100)
-    designation = forms.CharField(max_length=100)
-    join_date = forms.DateField()
-    dob = forms.DateField()
-    blood_group = forms.CharField(max_length=10)
-    phone_number = forms.CharField(max_length=20)
-    primary_email = forms.EmailField()
-    secondary_email = forms.EmailField()
-    photo = forms.ImageField(required=False)
+from django import forms
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.models import User
 
-    class Meta(UserCreationForm.Meta):
+class UpdateCredentialsForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['old_password'].widget.attrs['placeholder'] = 'Enter your current password'
+        self.fields['new_password1'].widget.attrs['placeholder'] = 'Enter a new password'
+        self.fields['new_password2'].widget.attrs['placeholder'] = 'Confirm the new password'
+
+    class Meta:
+        model = User
+        fields = []
+
+
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from .models import CustomUser
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
         model = CustomUser
-        fields = ('username', 'password1', 'password2', 'full_name', 'department', 'designation',
-                  'join_date', 'dob', 'blood_group', 'phone_number', 'primary_email',
-                  'secondary_email', 'photo')
-
+        fields = ['full_name', 'department', 'designation', 'join_date', 'dob', 'blood_group', 'phone_number', 'primary_email', 'secondary_email', 'photo']
 
 
 
