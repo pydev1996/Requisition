@@ -143,6 +143,7 @@
         .profile img {
         width: 60px;
         height: 60px;
+        border-radius: 50px;
         vertical-align: middle;
         }
         h2{
@@ -163,7 +164,11 @@
         <h1>Department Head</h1>
         <h2>Welcome, {{ username }}!</h2> 
         <div class="profile">
-            <a href="{% url 'profile_details' %}" ><img src="/static/images/profile.png" alt="Logo"></a>
+            {%if user.photo%}
+            <a href="{% url 'profile_details' %}" ><img src="{{ user.photo.url }}"  alt="Logo"></a>
+            {%else%}
+            <a href="{% url 'profile_details' %}" ><img src="/static/images/profile.png"   alt="Logo"></a>
+            {%endif%}
            
             </div>
         <div class="logo">
