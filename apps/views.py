@@ -12,35 +12,40 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from .forms import CustomLoginForm
 from django.views.decorators.csrf import csrf_protect
-
+from django.contrib import messages
 @csrf_protect
 def login_view(request):
     if request.method == 'POST':
-        
         form = CustomLoginForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user_type = form.cleaned_data.get('user_type')
-            #user1 = CustomUser.objects.get(username=username)
-            user = authenticate(request, username=username, password=password,user_type=user_type)
-          
+
+            user = authenticate(request, username=username, password=password, user_type=user_type)
             if user is not None:
-                login(request, user)
-                # Additional logic based on user_type
-                if user_type == 'DEPARTMENT_HEAD':
-                    return redirect('department_head')
-                elif user_type == 'NORMAL_USER':
-                    return redirect('home_page')
-                elif user_type == 'STORE_EXECUTIVE':
-                    return redirect('store_executive')
-                elif user_type == 'ADMINISTRATION':
-                    return redirect('administrations')
+                # Check if username, password, and user_type match
+                if user.username == username and user.check_password(password) and user.user_type == user_type:
+                    login(request, user)
+                    # Additional logic based on user_type
+                    if user_type == 'DEPARTMENT_HEAD':
+                        return redirect('department_head')
+                    elif user_type == 'NORMAL_USER':
+                        return redirect('home_page')
+                    elif user_type == 'STORE_EXECUTIVE':
+                        return redirect('store_executive')
+                    elif user_type == 'ADMINISTRATION':
+                        return redirect('administrations')
+                else:
+                    easygui.msgbox('Your credentials are incorrect. Please provide correct username, password, and user type.', 'Login Failed')
+            else:
+                easygui.msgbox('Your credentials are incorrect. Please provide correct username, password, and user type.', 'Login Failed')
         else:
-            easygui.msgbox('Your Credentials are incorrect. Please Give Correct Username or password or usertype.', 'Fail')
+            easygui.msgbox('Your credentials are incorrect. Please provide correct username, password, and user type.', 'Login Failed')
     else:
         form = CustomLoginForm(request)
     return render(request, 'login.html', {'form': form})
+
  # Redirect to the home page or any other desired URL
 
   
